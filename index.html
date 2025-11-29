@@ -16,6 +16,15 @@
             overflow-x: hidden;
         }
 
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
         .loading-screen {
             position: fixed;
             top: 0;
@@ -112,55 +121,8 @@
             overflow-x: hidden;
         }
 
-        .balance-header {
-            position: fixed;
-            top: 16px;
-            right: 16px;
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            border-radius: 16px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 50;
-            border: 2px solid #fa9725;
-        }
-
-        .balance-amount {
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-        }
-
-        .balance-icon {
-            width: 28px;
-            height: 28px;
-        }
-
-        .deposit-button {
-            width: 32px;
-            height: 32px;
-            background-color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: black;
-            transition: transform 0.2s;
-            margin-left: 4px;
-        }
-
-        .deposit-button:hover {
-            transform: scale(1.1);
-        }
-
         .content {
-            padding-top: 96px;
+            padding-top: 32px;
             padding-bottom: 32px;
         }
 
@@ -386,37 +348,18 @@
             border-radius: 24px;
             overflow: hidden;
             position: relative;
-            border: 3px solid #fa9725;
-            box-shadow: 0 20px 40px rgba(250, 151, 37, 0.3);
+            border: 3px solid rgba(0, 0, 0, 0.7);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
-        .game-modal-header {
+        .game-modal-close {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             height: 60px;
-            background: linear-gradient(135deg, #fa9725, #ffb866);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 10;
-        }
-
-        .game-modal-title {
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            text-transform: uppercase;
-        }
-
-        .game-modal-close {
-            width: 40px;
-            height: 40px;
             background-color: #ef4444;
             border: none;
-            border-radius: 8px;
             color: white;
             font-weight: bold;
             font-size: 20px;
@@ -425,11 +368,11 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
+            z-index: 10;
         }
 
         .game-modal-close:hover {
             background-color: #dc2626;
-            transform: scale(1.05);
         }
 
         .game-iframe-container {
@@ -480,18 +423,8 @@
                 border-radius: 16px;
             }
 
-            .game-modal-header {
-                height: 50px;
-                padding: 0 16px;
-            }
-
-            .game-modal-title {
-                font-size: 16px;
-            }
-
             .game-modal-close {
-                width: 35px;
-                height: 35px;
+                height: 50px;
                 font-size: 18px;
             }
 
@@ -527,25 +460,6 @@
                 font-size: 16px;
             }
 
-            .balance-header {
-                padding: 10px 12px;
-            }
-
-            .balance-amount {
-                font-size: 18px;
-            }
-
-            .balance-icon {
-                width: 24px;
-                height: 24px;
-            }
-
-            .deposit-button {
-                width: 28px;
-                height: 28px;
-                font-size: 20px;
-            }
-
             .game-modal {
                 padding: 8px;
             }
@@ -561,12 +475,6 @@
     </div>
 
     <div class="main-container">
-        <div class="balance-header">
-            <span class="balance-amount" id="balanceAmount">0.10</span>
-            <img class="balance-icon" src="https://ton.org/download/ton_symbol.png" alt="TON">
-            <button class="deposit-button" onclick="openModal('deposit')">+</button>
-        </div>
-
         <div class="content">
             <div class="max-width-container">
                 <div class="games-grid">
@@ -612,10 +520,7 @@
     <!-- Game Modal -->
     <div class="game-modal" id="gameModal">
         <div class="game-modal-content slide-in">
-            <div class="game-modal-header">
-                <div class="game-modal-title" id="gameTitle">Игра загружается...</div>
-                <button class="game-modal-close" onclick="closeGameModal()">✕</button>
-            </div>
+            <button class="game-modal-close" onclick="closeGameModal()">✕</button>
             <div class="game-iframe-container">
                 <div class="loading-game" id="gameLoading">
                     <div class="loading-spinner"></div>
@@ -675,12 +580,6 @@
             setTimeout(() => {
                 document.getElementById('loadingScreen').classList.add('hidden');
             }, 2500);
-
-            updateBalance();
-        }
-
-        function updateBalance() {
-            document.getElementById('balanceAmount').textContent = balance.toFixed(2);
         }
 
         function openGameModal(game) {
@@ -688,22 +587,14 @@
             const modal = document.getElementById('gameModal');
             const iframe = document.getElementById('gameIframe');
             const loading = document.getElementById('gameLoading');
-            const title = document.getElementById('gameTitle');
-            
-            // Показываем модальное окно
+
             modal.classList.add('active');
-            
-            // Устанавливаем заголовок
-            title.textContent = gameTitles[game] || 'Игра';
-            
-            // Показываем загрузку и скрываем iframe
+
             loading.style.display = 'block';
             iframe.style.display = 'none';
-            
-            // Загружаем игру в iframe
+
             iframe.src = gameUrls[game];
-            
-            // Обработчик загрузки iframe
+
             iframe.onload = function() {
                 setTimeout(() => {
                     loading.style.display = 'none';
@@ -715,10 +606,9 @@
         function closeGameModal() {
             const modal = document.getElementById('gameModal');
             const iframe = document.getElementById('gameIframe');
-            
+
             modal.classList.remove('active');
-            
-            // Очищаем iframe для остановки игры
+
             setTimeout(() => {
                 iframe.src = 'about:blank';
                 currentGame = null;
@@ -768,7 +658,6 @@
             closeModal('withdraw');
         }
 
-        // Обработчик клика вне модального окна для закрытия
         document.addEventListener('click', (e) => {
             const depositModal = document.getElementById('depositModal');
             const withdrawModal = document.getElementById('withdrawModal');
@@ -785,7 +674,6 @@
             }
         });
 
-        // Обработчик клавиши Escape для закрытия модальных окон
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (document.getElementById('gameModal').classList.contains('active')) {
