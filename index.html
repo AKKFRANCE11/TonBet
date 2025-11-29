@@ -121,6 +121,7 @@
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             padding: 16px;
+            padding-top: 46px;
             position: relative;
             overflow-x: hidden;
         }
@@ -411,6 +412,28 @@
             background-color: #000;
         }
 
+        .game-info-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            z-index: 20;
+            max-width: 90%;
+            animation: slideIn 0.3s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-info-message p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
         .game-iframe {
             width: 100%;
             height: 100%;
@@ -540,7 +563,7 @@
                         <button class="section-button" onclick="window.open('https://t.me/Tonbet999', '_blank')">канал</button>
                     </div>
 
-                    <a href="https://teletype.in/@alphateam1/TmsClDk3tEV" target="_blank" class="terms-link">Условия пользования</a>
+                    <a href="https://teletype.in/@alphateam1/TmsClDk3tEV" target="_blank" class="terms-link">Условия пользования / Документация сайта</a>
                 </div>
             </div>
         </div>
@@ -556,6 +579,9 @@
                 </svg>
             </button>
             <div class="game-iframe-container">
+                <div class="game-info-message" id="gameInfoMessage" style="display: none;">
+                    <p>Для выхода в меню, нажмите на кнопку "ДОМ" сверху экрана</p>
+                </div>
                 <div class="loading-game" id="gameLoading">
                     <div class="loading-spinner"></div>
                     Загрузка игры...
@@ -621,10 +647,12 @@
             const modal = document.getElementById('gameModal');
             const iframe = document.getElementById('gameIframe');
             const loading = document.getElementById('gameLoading');
+            const infoMessage = document.getElementById('gameInfoMessage');
 
             modal.classList.add('active');
 
             loading.style.display = 'block';
+            infoMessage.style.display = 'block';
             iframe.style.display = 'none';
 
             iframe.src = gameUrls[game];
@@ -632,6 +660,7 @@
             iframe.onload = function() {
                 setTimeout(() => {
                     loading.style.display = 'none';
+                    infoMessage.style.display = 'none';
                     iframe.style.display = 'block';
                 }, 1000);
             };
@@ -640,8 +669,10 @@
         function closeGameModal() {
             const modal = document.getElementById('gameModal');
             const iframe = document.getElementById('gameIframe');
+            const infoMessage = document.getElementById('gameInfoMessage');
 
             modal.classList.remove('active');
+            infoMessage.style.display = 'none';
 
             setTimeout(() => {
                 iframe.src = 'about:blank';
